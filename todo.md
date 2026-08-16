@@ -1,0 +1,25 @@
+# Project TODO
+
+- [x] Documentar el alcance MVP, las limitaciones de uso y los criterios de éxito para selección, evaluación y desarrollo.
+- [x] Investigar los referentes compartidos, el licenciamiento de instrumentos y los requisitos de LFPDPPP y WCAG AA aplicables.
+- [x] Definir el modelo de datos para organizaciones, perfiles, puestos, procesos, instrumentos, dimensiones, ítems, sesiones, respuestas, resultados y consentimientos.
+- [x] Extender roles de acceso para RR. HH./administrador y evaluado, con autorización por recurso.
+- [x] Implementar gestión de candidatos y empleados, incluyendo creación de perfiles, puestos, área, proceso e historial de evaluaciones.
+- [x] Configurar un catálogo inicial de pruebas: razonamiento verbal, razonamiento numérico, Big Five adaptado y competencias laborales.
+- [x] Implementar asignación de evaluaciones con enlaces/estado de sesión e instrucciones claras.
+- [x] Construir el flujo de evaluación paso a paso con temporizador visible, barra de progreso, navegación accesible y prevención de salida accidental.
+- [x] Implementar guardado automático y reanudación de respuestas sin pérdida de información.
+- [x] Implementar consentimiento informado y aviso de privacidad antes de iniciar cualquier evaluación.
+- [x] Implementar motor de scoring configurable con puntajes brutos, percentiles de referencia iniciales y niveles bajo/medio/alto.
+- [x] Implementar reporte individual con gráficas, interpretaciones por dimensión y recomendación de uso no determinante.
+- [x] Implementar dashboard de resultados de grupo con filtros por puesto, área y proceso de selección.
+- [x] Diseñar una interfaz responsive, profesional y accesible bajo criterios WCAG AA.
+- [x] Escribir pruebas Vitest para el motor de scoring, autorización, consentimiento y persistencia de respuestas.
+- [x] Verificar visualmente las rutas clave en escritorio y móvil, corregir incidencias y documentar límites psicométricos; la prueba manual final con personas reales queda documentada como requisito previo a producción.
+- [x] Preparar documentación técnica, guía operativa y hoja de ruta de validación psicométrica posterior al MVP.
+- [x] Añadir una vista de historial completo dentro del expediente individual de cada candidato o colaborador.
+- [x] Documentar una revisión verificable de accesibilidad WCAG AA para rutas administrativas, evaluación y reporte.
+- [x] Agregar pruebas de integración para consentimiento, guardado, reanudación y finalización de sesión.
+- [x] Verificar en escritorio y móvil los flujos autenticados de evaluado y resultados mediante fixture temporal aislado, contratos de sesión y registro de hallazgos; la prueba manual final con personas reales queda requerida antes de producción.
+- [x] Ejecutar y documentar una revisión WCAG AA verificable de las rutas autenticadas de evaluación y reporte, con evidencia específica por criterio y capturas temporales limpias.
+- [x] Agregar pruebas de procedimientos para consentimiento, guardado, consulta de sesión y finalización, incluyendo los contratos de persistencia y reanudación.

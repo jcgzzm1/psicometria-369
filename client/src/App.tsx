@@ -4,6 +4,8 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { AdminAssignments, AdminDashboard, AdminInstruments, AdminPeople, AdminPersonHistory } from "./pages/Admin";
+import { AssessmentPage, CandidateHome, ResultReport } from "./pages/Evaluation";
 import Home from "./pages/Home";
 
 function Router() {
@@ -11,6 +13,14 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/admin"} component={AdminDashboard} />
+      <Route path={"/admin/personas"} component={AdminPeople} />
+      <Route path={"/admin/personas/:id"} component={AdminPersonHistory} />
+      <Route path={"/admin/asignaciones"} component={AdminAssignments} />
+      <Route path={"/admin/instrumentos"} component={AdminInstruments} />
+      <Route path={"/mis-evaluaciones"} component={CandidateHome} />
+      <Route path={"/evaluacion/:id"} component={AssessmentPage} />
+      <Route path={"/resultados/:id"} component={ResultReport} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
