@@ -27,3 +27,5 @@
 - [x] Añadir estados de carga, error y reintento verificables para catálogo y evaluaciones.
 - [ ] Desplegar la corrección y comprobar en el dominio publicado que catálogo y asignaciones cargan tras iniciar sesión en ese mismo host.
 - [ ] Investigar y resolver la regresión crítica introducida en la última publicación, restaurando una versión estable si procede.
+- [ ] Comparar la versión estable anterior con las dos publicaciones recientes y contener la caída automática antes de más cambios funcionales.
+- [x] Proteger todos los accesos a almacenamiento local en el panel para evitar caídas en navegadores con privacidad restringida.
