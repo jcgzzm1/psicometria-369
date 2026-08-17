@@ -29,3 +29,4 @@
 - [ ] Investigar y resolver la regresión crítica introducida en la última publicación, restaurando una versión estable si procede.
 - [ ] Comparar la versión estable anterior con las dos publicaciones recientes y contener la caída automática antes de más cambios funcionales.
 - [x] Proteger todos los accesos a almacenamiento local en el panel para evitar caídas en navegadores con privacidad restringida.
+- [ ] Corregir el retorno posterior al inicio de sesión para que lleve al espacio administrativo de Nexo Persona y no permanezca en la portada estática.
