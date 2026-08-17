@@ -26,3 +26,4 @@
 - [x] Diagnosticar y corregir el bloqueo del catálogo de instrumentos y la carga de evaluaciones reportado en producción.
 - [x] Añadir estados de carga, error y reintento verificables para catálogo y evaluaciones.
 - [ ] Desplegar la corrección y comprobar en el dominio publicado que catálogo y asignaciones cargan tras iniciar sesión en ese mismo host.
+- [ ] Investigar y resolver la regresión crítica introducida en la última publicación, restaurando una versión estable si procede.
