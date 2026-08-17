@@ -23,3 +23,6 @@
 - [x] Verificar en escritorio y móvil los flujos autenticados de evaluado y resultados mediante fixture temporal aislado, contratos de sesión y registro de hallazgos; la prueba manual final con personas reales queda requerida antes de producción.
 - [x] Ejecutar y documentar una revisión WCAG AA verificable de las rutas autenticadas de evaluación y reporte, con evidencia específica por criterio y capturas temporales limpias.
 - [x] Agregar pruebas de procedimientos para consentimiento, guardado, consulta de sesión y finalización, incluyendo los contratos de persistencia y reanudación.
+- [x] Diagnosticar y corregir el bloqueo del catálogo de instrumentos y la carga de evaluaciones reportado en producción.
+- [x] Añadir estados de carga, error y reintento verificables para catálogo y evaluaciones.
+- [ ] Desplegar la corrección y comprobar en el dominio publicado que catálogo y asignaciones cargan tras iniciar sesión en ese mismo host.
