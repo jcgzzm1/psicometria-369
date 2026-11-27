@@ -30,3 +30,11 @@
 - [ ] Comparar la versión estable anterior con las dos publicaciones recientes y contener la caída automática antes de más cambios funcionales.
 - [x] Proteger todos los accesos a almacenamiento local en el panel para evitar caídas en navegadores con privacidad restringida.
 - [ ] Corregir el retorno posterior al inicio de sesión para que lleve al espacio administrativo de Nexo Persona y no permanezca en la portada estática.
+- [x] Recuperar el servidor de vista previa del proyecto restaurado y confirmar que responde en la URL actual de revisión.
+- [x] Validar en vista previa la portada y la pantalla de acceso administrativo protegido; el panel autenticado aún no se verificó en navegador.
+- [x] Diagnosticar el dominio publicado: Manus muestra "Site unavailable due to unpaid billing" el 27 de noviembre de 2026; no es una caída del código de aplicación.
+- [x] Corregir upsertUser para preservar el rol existente cuando la autenticación no envía un rol explícito; 23 pruebas y TypeScript aprobados.
+- [x] Confirmar que la cuenta propietaria identificada previamente figura como admin en la base de datos.
+- [ ] Regularizar facturación mediante la cuenta de Manus para recuperar el dominio público; requiere intervención del propietario.
+- [ ] Verificar el acceso autenticado del propietario y la navegación Resumen → Personas → Asignaciones → Instrumentos en vista previa.
+- [ ] Informar al usuario la URL de revisión y cualquier bloqueo restante del acceso de administrador antes de declarar estable la publicación.

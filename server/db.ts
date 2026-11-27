@@ -19,6 +19,7 @@ import { getResumeState, validateCompletion, validateConsentAcceptance, validate
 import { scoreTest } from "../shared/scoring";
 import type { User } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { buildUserUpsertPlan } from "./userUpsert";
 
 type ScoringConfig = TestDefinition["scoringConfig"];
 
@@ -47,18 +48,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   const db = await getDb();
   if (!db) return;
 
-  const values: InsertUser = { openId: user.openId };
-  const updateSet: Record<string, unknown> = {};
-  for (const field of ["name", "email", "loginMethod"] as const) {
-    if (user[field] !== undefined) {
-      values[field] = user[field] ?? null;
-      updateSet[field] = user[field] ?? null;
-    }
-  }
-  values.lastSignedIn = user.lastSignedIn ?? new Date();
-  updateSet.lastSignedIn = values.lastSignedIn;
-  values.role = user.role ?? (user.openId === ENV.ownerOpenId ? "admin" : "user");
-  updateSet.role = values.role;
+  const { values, updateSet } = buildUserUpsertPlan(user, ENV.ownerOpenId);
   await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
 }
 
