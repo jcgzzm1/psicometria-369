@@ -26,6 +26,7 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
+import { BRAND_NAME } from "@shared/brand";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Resumen", path: "/admin" },
@@ -180,7 +181,7 @@ function DashboardLayoutContent({
               {!isCollapsed ? (
                 <div className="flex items-center gap-2 min-w-0">
                   <span className="font-semibold tracking-tight truncate">
-                    Nexo Persona
+                    {BRAND_NAME}
                   </span>
                 </div>
               ) : null}

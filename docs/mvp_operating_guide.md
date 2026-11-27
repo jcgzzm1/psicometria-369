@@ -1,4 +1,4 @@
-# Guía operativa y técnica — MVP de Psicometría Empresarial
+# Guía operativa y técnica — Psicometria 369 — MVP empresarial
 
 ## Propósito y alcance
 

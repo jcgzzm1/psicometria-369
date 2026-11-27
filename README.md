@@ -1,4 +1,4 @@
-# Nexo Persona — MVP de evaluación psicométrica
+# Psicometria 369 — MVP de evaluación psicométrica
 
 Plataforma web empresarial para administrar personas, asignar evaluaciones, aplicar cuestionarios y consultar resultados como apoyo a la revisión humana.
 

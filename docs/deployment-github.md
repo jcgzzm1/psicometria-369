@@ -1,4 +1,4 @@
-# Desplegar Nexo Persona desde GitHub
+# Desplegar Psicometria 369 desde GitHub
 
 ## Antes de empezar
 

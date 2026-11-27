@@ -45,3 +45,8 @@
 - [x] Crear un repositorio GitHub privado para Nexo Persona; el primer push fue rechazado por el permiso de workflows y se eliminó esa capacidad opcional.
 - [x] Subir el código validado y las instrucciones al repositorio privado sin workflow de GitHub Actions.
 - [x] Verificar desde GitHub que el repo es privado, main existe y contiene código, README y guía de despliegue; comunicar límites de Vercel y Manus OAuth.
+- [x] Cambiar la marca visible a Psicometria 369 en portada, panel, título HTML y configuración VITE_APP_TITLE de WebDev.
+- [x] Actualizar README y guías operativa y de despliegue con el nombre Psicometria 369.
+- [x] Renombrar el repositorio privado GitHub a psicometria-369 y actualizar el remoto local sin modificar origin.
+- [x] Ejecutar 27 pruebas, TypeScript y build; verificar visualmente nueva marca en portada y panel de preview.
+- [ ] Guardar checkpoint y sincronizar el código con GitHub en psicometria-369.
