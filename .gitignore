@@ -13,6 +13,8 @@ build/
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*
+!.env.example
 
 # IDE and editor files
 .vscode/
@@ -108,7 +110,7 @@ temp/
 
 # Webdev artifacts (checkpoint zips, migrations, etc.)
 .webdev/
-
+.manus-logs/
 # Manus version file (auto-generated, not part of source)
 client/public/__manus__/version.json
 .project-config.json
