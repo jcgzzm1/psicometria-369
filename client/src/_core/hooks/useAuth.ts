@@ -4,6 +4,7 @@ import { TRPCClientError } from "@trpc/client";
 import { useCallback, useEffect, useMemo } from "react";
 
 type UseAuthOptions = {
+  disabled?: boolean;
   redirectOnUnauthenticated?: boolean;
   redirectPath?: string;
 };
@@ -13,10 +14,11 @@ export function useAuth(options?: UseAuthOptions) {
   // navigate — never during render. startLogin() mints a one-time nonce + writes
   // the state cookie, so calling it per render would overwrite the cookie and
   // desync it from an in-flight login's `state`.
-  const { redirectOnUnauthenticated = false, redirectPath } = options ?? {};
+  const { disabled = false, redirectOnUnauthenticated = false, redirectPath } = options ?? {};
   const utils = trpc.useUtils();
 
   const meQuery = trpc.auth.me.useQuery(undefined, {
+    enabled: !disabled,
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -53,11 +55,12 @@ export function useAuth(options?: UseAuthOptions) {
   const state = useMemo(() => {
     return {
       user: meQuery.data ?? null,
-      loading: meQuery.isLoading || logoutMutation.isPending,
+      loading: disabled ? false : meQuery.isLoading || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
       isAuthenticated: Boolean(meQuery.data),
     };
   }, [
+    disabled,
     meQuery.data,
     meQuery.error,
     meQuery.isLoading,
@@ -74,7 +77,7 @@ export function useAuth(options?: UseAuthOptions) {
   }, [meQuery.data]);
 
   useEffect(() => {
-    if (!redirectOnUnauthenticated) return;
+    if (disabled || !redirectOnUnauthenticated) return;
     if (meQuery.isLoading || logoutMutation.isPending) return;
     if (state.user) return;
     if (typeof window === "undefined") return;
@@ -87,6 +90,7 @@ export function useAuth(options?: UseAuthOptions) {
       startLogin();
     }
   }, [
+    disabled,
     redirectOnUnauthenticated,
     redirectPath,
     logoutMutation.isPending,
@@ -100,3 +104,4 @@ export function useAuth(options?: UseAuthOptions) {
     logout,
   };
 }
+
