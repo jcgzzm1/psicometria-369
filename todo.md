@@ -36,5 +36,12 @@
 - [x] Corregir upsertUser para preservar el rol existente cuando la autenticación no envía un rol explícito; 23 pruebas y TypeScript aprobados.
 - [x] Confirmar que la cuenta propietaria identificada previamente figura como admin en la base de datos.
 - [ ] Regularizar facturación mediante la cuenta de Manus para recuperar el dominio público; requiere intervención del propietario.
-- [ ] Verificar el acceso autenticado del propietario y la navegación Resumen → Personas → Asignaciones → Instrumentos en vista previa.
-- [ ] Informar al usuario la URL de revisión y cualquier bloqueo restante del acceso de administrador antes de declarar estable la publicación.
+- [x] Verificar visualmente las rutas autenticadas Resumen, Personas, Asignaciones e Instrumentos de la cuenta propietaria en vista previa: cuatro secciones y cuatro instrumentos cargan; no se crearon expedientes o asignaciones de prueba.
+- [x] Informar al usuario el enlace de revisión y el bloqueo de facturación del dominio de producción; no declarar estable la publicación.
+- [x] Verificar en DB real que un upsert sin role conserva admin; compilación de producción aprobada.
+- [x] Confirmar que GitHub CLI está autenticado como jcgzzm1 y no alterar la configuración global del usuario.
+- [x] Revisar credenciales detectables, dependencias y archivos del proyecto antes de crear un repositorio privado.
+- [x] Preparar README e instrucciones de despliegue que aclaran variables requeridas y dependencias externas de Manus.
+- [x] Crear un repositorio GitHub privado para Nexo Persona; el primer push fue rechazado por el permiso de workflows y se eliminó esa capacidad opcional.
+- [x] Subir el código validado y las instrucciones al repositorio privado sin workflow de GitHub Actions.
+- [x] Verificar desde GitHub que el repo es privado, main existe y contiene código, README y guía de despliegue; comunicar límites de Vercel y Manus OAuth.
