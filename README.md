@@ -10,7 +10,7 @@ Incluye registro de personas, catálogo de cuatro evaluaciones (razonamiento ver
 
 - Cliente: React, TypeScript, Vite y Tailwind CSS.
 - Servidor: Node.js, Express y tRPC.
-- Base de datos: MySQL/TiDB mediante Drizzle ORM.
+- Base de datos: PostgreSQL/Supabase mediante Drizzle ORM.
 - Autenticación: Manus OAuth.
 - Integraciones opcionales de almacenamiento, mapas, generación multimedia y APIs: Manus Forge.
 
@@ -18,13 +18,14 @@ Este repositorio contiene el código fuente; no incluye usuarios, expedientes, r
 
 ## Desarrollo local
 
-Requiere Node.js 22 LTS, Corepack y acceso a una instancia MySQL/TiDB. Desde la raíz:
+Requiere Node.js 22 LTS, Corepack y acceso a una instancia PostgreSQL/Supabase. Desde la raíz:
 
 ```bash
 corepack enable
 corepack prepare pnpm@10.4.1 --activate
 pnpm install --frozen-lockfile
-# Configura las variables requeridas localmente; consulta docs/deployment-github.md.
+Copy-Item .env.example .env
+# Completa .env solo en tu equipo; consulta docs/deployment-github.md.
 pnpm check
 pnpm test
 pnpm build
@@ -35,11 +36,11 @@ pnpm dev
 
 ## Base de datos
 
-El esquema vive en `drizzle/schema.ts` y las migraciones SQL versionadas en `drizzle/`. Revisa cada migración antes de aplicarla a cualquier base compartida o productiva. La carga del catálogo MVP se realiza desde la biblioteca de Instrumentos después de iniciar sesión como administrador.
+El esquema de aplicación vive en `drizzle/schema.ts`. La migración inicial compatible con Supabase está en `supabase/migrations/`; los archivos SQL antiguos de `drizzle/` se conservan únicamente como historial de la versión MySQL/TiDB y no se deben ejecutar en Supabase. Revisa cada migración antes de aplicarla a una base compartida o productiva. La carga del catálogo MVP se realiza desde la biblioteca de Instrumentos después de iniciar sesión como administrador.
 
 ## Despliegue
 
-Consulta [`docs/deployment-github.md`](docs/deployment-github.md) antes de conectar el repositorio a un proveedor. GitHub almacena el código, pero no aloja por sí solo el servidor. Esta aplicación es un servidor Express persistente con base MySQL/TiDB y callbacks OAuth; un despliegue directo como SPA en Vercel no basta y requiere adaptar o provisionar el servidor y configurar correctamente OAuth, dominio, cookies y secretos.
+Consulta [`docs/deployment-github.md`](docs/deployment-github.md) antes de conectar el repositorio a un proveedor. GitHub almacena el código, pero no aloja por sí solo el servidor. Esta aplicación necesita un servicio Node.js (por ejemplo Render o Railway), Supabase y la configuración correcta de OAuth, dominio, cookies y secretos.
 
 ## Variables de entorno
 
@@ -54,3 +55,4 @@ pnpm build
 ```
 
 La suite automatizada valida flujo de evaluación, scoring, permisos, consentimiento y preservación del rol administrativo.
+

@@ -1,5 +1,6 @@
 import { and, desc, eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/mysql2";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 import {
   evaluationAssignments,
   evaluationResults,
@@ -24,11 +25,19 @@ import { buildUserUpsertPlan } from "./userUpsert";
 type ScoringConfig = TestDefinition["scoringConfig"];
 
 let _db: ReturnType<typeof drizzle> | null = null;
+let _client: ReturnType<typeof postgres> | null = null;
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const connectionString = process.env.DATABASE_URL;
+      const isLocal = connectionString.includes("localhost") || connectionString.includes("127.0.0.1");
+      _client = postgres(connectionString, {
+        max: 5,
+        prepare: false,
+        ssl: isLocal ? false : "require",
+      });
+      _db = drizzle(_client);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -49,7 +58,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   if (!db) return;
 
   const { values, updateSet } = buildUserUpsertPlan(user, ENV.ownerOpenId);
-  await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
+  await db.insert(users).values(values).onConflictDoUpdate({ target: users.openId, set: updateSet });
 }
 
 export async function getUserByOpenId(openId: string) {
@@ -83,14 +92,14 @@ async function getOrCreateOrganization() {
   const db = await requireDb();
   const existing = await db.select().from(organizations).limit(1);
   if (existing[0]) return existing[0];
-  const created = await db.insert(organizations).values({
+  const [created] = await db.insert(organizations).values({
     name: "Organización principal",
     legalName: null,
     address: null,
     privacyContactEmail: null,
     privacyChannel: null,
-  });
-  const id = Number(created[0].insertId);
+  }).returning({ id: organizations.id });
+  const id = created.id;
   const result = await db.select().from(organizations).where(eq(organizations.id, id)).limit(1);
   if (!result[0]) throw new Error("No se pudo crear la organización base.");
   return result[0];
@@ -121,7 +130,7 @@ export async function bootstrapCatalog() {
     const existing = await db.select().from(psychometricTests).where(eq(psychometricTests.code, definition.code)).limit(1);
     let testId = existing[0]?.id;
     if (!testId) {
-      const created = await db.insert(psychometricTests).values({
+      const [created] = await db.insert(psychometricTests).values({
         code: definition.code,
         name: definition.name,
         category: definition.category,
@@ -129,8 +138,8 @@ export async function bootstrapCatalog() {
         durationMinutes: definition.durationMinutes,
         instructions: definition.instructions,
         scoringConfig: definition.scoringConfig,
-      });
-      testId = Number(created[0].insertId);
+      }).returning({ id: psychometricTests.id });
+      testId = created.id;
     }
 
     const existingDimensions = await db.select().from(testDimensions).where(eq(testDimensions.testId, testId));
@@ -139,14 +148,14 @@ export async function bootstrapCatalog() {
       const dimension = definition.dimensions[index];
       let dimensionId = dimensionIds.get(dimension.id);
       if (!dimensionId) {
-        const created = await db.insert(testDimensions).values({
+        const [created] = await db.insert(testDimensions).values({
           testId,
           code: dimension.id,
           name: dimension.name,
           description: dimension.description,
           sortOrder: index + 1,
-        });
-        dimensionId = Number(created[0].insertId);
+        }).returning({ id: testDimensions.id });
+        dimensionId = created.id;
         dimensionIds.set(dimension.id, dimensionId);
       }
     }
@@ -201,15 +210,15 @@ export async function createPerson(input: {
 }) {
   const db = await requireDb();
   const organization = await getOrCreateOrganization();
-  const created = await db.insert(people).values({
+  const [created] = await db.insert(people).values({
     organizationId: organization.id,
     fullName: input.fullName,
     email: normalizeEmail(input.email),
     personType: input.personType,
     position: input.position,
     area: input.area,
-  });
-  const id = Number(created[0].insertId);
+  }).returning({ id: people.id });
+  const id = created.id;
   const person = await db.select().from(people).where(eq(people.id, id)).limit(1);
   return person[0];
 }
@@ -248,13 +257,13 @@ export async function createAssignment(input: { personId: number; testId: number
   const person = await db.select().from(people).where(and(eq(people.id, input.personId), eq(people.organizationId, organization.id))).limit(1);
   const test = await db.select().from(psychometricTests).where(eq(psychometricTests.id, input.testId)).limit(1);
   if (!person[0] || !test[0]) throw new Error("La persona o la prueba seleccionada no existen.");
-  const created = await db.insert(evaluationAssignments).values({
+  const [created] = await db.insert(evaluationAssignments).values({
     organizationId: organization.id,
     personId: input.personId,
     testId: input.testId,
     process: input.process,
-  });
-  return { id: Number(created[0].insertId), success: true } as const;
+  }).returning({ id: evaluationAssignments.id });
+  return { id: created.id, success: true } as const;
 }
 
 export async function listAdminAssignments() {
@@ -402,7 +411,8 @@ export async function saveItemResponse(assignmentId: number, itemId: number, val
   if (!item[0]) throw new Error("El reactivo no pertenece a esta evaluación.");
   const responseValidation = validateResponseSave({ consentAccepted: row.assignment.consentAccepted, status: row.assignment.status, optionAllowed: isAllowedResponse(value, item[0].options) });
   if (!responseValidation.allowed) throw new Error(responseValidation.message);
-  await db.insert(itemResponses).values({ assignmentId, itemId, numericScore: value }).onDuplicateKeyUpdate({
+  await db.insert(itemResponses).values({ assignmentId, itemId, numericScore: value }).onConflictDoUpdate({
+    target: [itemResponses.assignmentId, itemResponses.itemId],
     set: { numericScore: value, answeredAt: new Date() },
   });
   return { success: true, savedAt: new Date() } as const;
@@ -433,7 +443,8 @@ export async function completeAssignment(assignmentId: number, user: User) {
     recommendation: result.recommendation,
     interpretation: result.note,
     dimensionScores: result.dimensions,
-  }).onDuplicateKeyUpdate({
+  }).onConflictDoUpdate({
+    target: evaluationResults.assignmentId,
     set: {
       rawScore: result.rawScore,
       maxScore: result.maxScore,
@@ -504,3 +515,4 @@ export async function getAdminDashboard() {
     recent: records.slice(0, 8),
   };
 }
+

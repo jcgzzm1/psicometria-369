@@ -2,7 +2,7 @@
 
 ## Antes de empezar
 
-El repositorio contiene la aplicación actual, construida como React/Vite + Express/tRPC con MySQL/TiDB y autenticación Manus OAuth. GitHub es el repositorio de código; para publicar la aplicación se requiere además un proveedor de ejecución y una base de datos.
+El repositorio contiene la aplicación React/Vite + Express/tRPC, preparada para PostgreSQL/Supabase y autenticación Manus OAuth. GitHub guarda el código; para publicar la aplicación se requiere además un proveedor de ejecución y el proyecto de Supabase.
 
 No es una SPA estática. No conectes solamente la carpeta `dist/public` a un hosting estático: las rutas `/api/trpc` y `/api/oauth/callback` dependen del servidor Express. Vercel requeriría convertir ese servidor en funciones compatibles o desplegar por separado un servicio Node.js; esa adaptación no está incluida ni verificada en esta versión. El mismo principio aplica a cualquier plataforma que solo sirva archivos estáticos.
 
@@ -13,7 +13,7 @@ Selecciona un servicio que pueda desplegar desde GitHub, ejecutar Node.js 22 y m
 - **Build command:** `corepack enable && corepack prepare pnpm@10.4.1 --activate && pnpm install --frozen-lockfile && pnpm build`
 - **Start command:** `pnpm start`
 - **Health check sugerido:** `/`
-- **Base de datos:** MySQL o TiDB administrado, con TLS/red y respaldos configurados.
+- **Base de datos:** PostgreSQL de Supabase con TLS y respaldos configurados.
 
 Prueba primero en staging con base de datos vacía y credenciales propias del staging. No apuntes una primera publicación a la base real de producción.
 
@@ -21,7 +21,7 @@ Prueba primero en staging con base de datos vacía y credenciales propias del st
 
 Crea las variables del entorno de producción en el gestor de secretos del proveedor. Usa el listado de esta sección y `server/_core/env.ts` como referencia. No subas ningún archivo `.env` ni mantengas secretos en el repositorio. Variables principales:
 
-- `DATABASE_URL`: conexión MySQL/TiDB privada.
+- `DATABASE_URL`: conexión PostgreSQL de Supabase. Para un servidor desplegado usa una URL del pooler y conserva `sslmode=require`. No publiques esta URL.
 - `JWT_SECRET`: aleatorio, largo y exclusivo para el despliegue.
 - `OWNER_OPEN_ID`: identidad Manus del administrador inicial.
 - `VITE_APP_ID`, `OAUTH_SERVER_URL`, `VITE_OAUTH_PORTAL_URL`: configuración OAuth provista por Manus para la aplicación.
@@ -32,15 +32,20 @@ Configura el callback OAuth exacto como `https://TU-DOMINIO/api/oauth/callback`,
 
 Un despliegue fuera de Manus solo funcionará si Manus OAuth permite configurar y autorizar el dominio/callback nuevos, y si las integraciones Manus Forge necesarias admiten dicho entorno. Si no se pueden obtener esas capacidades/credenciales, habrá que sustituir la autenticación e integraciones por proveedores propios antes de producción.
 
-## Base de datos y datos personales
+## Preparar Supabase
 
-Revisa las migraciones `drizzle/*.sql` y aplícalas de forma controlada contra la base destinada al nuevo despliegue. Respaldar y probar la restauración antes de migraciones productivas. La base contiene datos personales sensibles de procesos laborales; limita permisos, activa TLS y cifrado/backup según el proveedor, define retención y acceso, y completa/revisa legalmente el aviso de privacidad antes de recabar datos reales. No uses respuestas de candidatos en CI, fixtures compartidos ni repositorios.
+1. Abre el proyecto de Supabase destinado a Psicometria 369.
+2. En SQL Editor revisa y ejecuta `supabase/migrations/202611270001_initial_schema.sql` una sola vez.
+3. En **Connect**, copia una conexión PostgreSQL apta para un servidor persistente y guárdala como `DATABASE_URL` en el proveedor de ejecución, nunca en GitHub.
+4. Confirma en Table Editor que se crearon diez tablas. La migración activa RLS sin políticas públicas: el navegador no puede consultar expedientes directamente y la aplicación accede por su servidor.
+
+Los archivos `drizzle/*.sql` anteriores pertenecen a MySQL/TiDB y se conservan como historial; no deben ejecutarse en Supabase. La base contiene datos personales sensibles de procesos laborales: limita permisos, usa TLS, configura respaldos y retención, y revisa legalmente el aviso de privacidad antes de recabar datos reales. No uses respuestas de candidatos en CI, fixtures compartidos ni repositorios.
 
 Carga el catálogo de cuatro instrumentos desde la biblioteca administrativa después del primer inicio de sesión. Los instrumentos son prototipos; no son normas psicométricas validadas.
 
 ## Verificación del código
 
-Antes de publicar cambios, ejecuta localmente `pnpm test`, `pnpm check` y `pnpm build`. El repositorio se preparó sin un workflow de GitHub Actions porque la autorización disponible para esta sesión no permite crear ni actualizar archivos de workflows. Puedes añadir CI más adelante desde GitHub o reconectar una integración con el permiso específico de workflows.
+Antes de publicar cambios, ejecuta localmente `pnpm test`, `pnpm check` y `pnpm build`. El repositorio todavía no incluye GitHub Actions; puedes añadir CI más adelante con permisos específicos para workflows.
 
 ## Verificación antes de producción
 
@@ -50,3 +55,4 @@ Antes de publicar cambios, ejecuta localmente `pnpm test`, `pnpm check` y `pnpm 
 4. Confirmar que cookies usan HTTPS y que el callback coincide exactamente.
 5. Revisar logs para asegurar que no exponen tokens, respuestas o datos personales.
 6. Solo entonces planificar el traslado de datos, si se requiere y se autoriza explícitamente.
+

@@ -152,7 +152,8 @@ function vitePluginManusDebugCollector(): Plugin {
 
 const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  base: mode === "pages" ? "/psicometria-369/" : "/",
   plugins,
   resolve: {
     alias: {
@@ -184,4 +185,5 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
-});
+}));
+
